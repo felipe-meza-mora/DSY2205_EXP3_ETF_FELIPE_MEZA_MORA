@@ -1,0 +1,7 @@
+footer {
+    margin-bottom: 0; /* Elimina cualquier margen extra debajo del footer */
+    color: white; /* Texto blanco */
+    text-align: center;
+    padding: 1rem 0;
+    width: 100%;
+}

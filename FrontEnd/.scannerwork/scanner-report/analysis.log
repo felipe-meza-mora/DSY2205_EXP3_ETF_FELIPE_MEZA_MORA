@@ -1,0 +1,82 @@
+Plugins:
+Bundled analyzers:
+  - JaCoCo 1.3.0.1538 (jacoco)
+  - IaC Code Quality and Security 1.39.0.13718 (iac)
+  - Text Code Quality and Security 2.19.0.4883 (text)
+  - Clean as You Code 2.4.0.2018 (cayc)
+Global server settings:
+  - sonar.azureresourcemanager.file.suffixes=.bicep
+  - sonar.core.id=147B411E-AZOkMzCAfLmFLz9THVGI
+  - sonar.core.startTime=2024-12-08T21:46:14-0300
+  - sonar.cs.file.suffixes=.cs,.razor
+  - sonar.css.file.suffixes=.css,.less,.scss,.sass
+  - sonar.docker.file.patterns=Dockerfile,*.dockerfile
+  - sonar.flex.file.suffixes=as
+  - sonar.forceAuthentication=true
+  - sonar.go.file.suffixes=.go
+  - sonar.html.file.suffixes=.html,.xhtml,.cshtml,.vbhtml,.aspx,.ascx,.rhtml,.erb,.shtm,.shtml,.cmp,.twig
+  - sonar.ipynb.file.suffixes=ipynb
+  - sonar.java.file.suffixes=.java,.jav
+  - sonar.java.jvmframeworkconfig.file.patterns=**/src/main/resources/**/*app*.properties,**/src/main/resources/**/*app*.yaml,**/src/main/resources/**/*app*.yml
+  - sonar.javascript.file.suffixes=.js,.jsx,.cjs,.mjs,.vue
+  - sonar.json.file.suffixes=.json
+  - sonar.jsp.file.suffixes=.jsp,.jspf,.jspx
+  - sonar.kotlin.file.suffixes=.kt,.kts
+  - sonar.multi-quality-mode.enabled=true
+  - sonar.php.file.suffixes=php,php3,php4,php5,phtml,inc
+  - sonar.python.file.suffixes=py
+  - sonar.qualityProfiles.allowDisableInheritedRules=true
+  - sonar.ruby.file.suffixes=.rb
+  - sonar.scala.file.suffixes=.scala
+  - sonar.terraform.file.suffixes=.tf
+  - sonar.typescript.file.suffixes=.ts,.tsx,.cts,.mts
+  - sonar.vbnet.file.suffixes=.vb
+  - sonar.xml.file.suffixes=.xml,.xsd,.xsl,.config
+  - sonar.yaml.file.suffixes=.yaml,.yml
+Project server settings:
+  - sonar.azureresourcemanager.file.suffixes=.bicep
+  - sonar.cs.file.suffixes=.cs,.razor
+  - sonar.css.file.suffixes=.css,.less,.scss,.sass
+  - sonar.docker.file.patterns=Dockerfile,*.dockerfile
+  - sonar.flex.file.suffixes=as
+  - sonar.go.file.suffixes=.go
+  - sonar.html.file.suffixes=.html,.xhtml,.cshtml,.vbhtml,.aspx,.ascx,.rhtml,.erb,.shtm,.shtml,.cmp,.twig
+  - sonar.ipynb.file.suffixes=ipynb
+  - sonar.java.file.suffixes=.java,.jav
+  - sonar.java.jvmframeworkconfig.file.patterns=**/src/main/resources/**/*app*.properties,**/src/main/resources/**/*app*.yaml,**/src/main/resources/**/*app*.yml
+  - sonar.javascript.file.suffixes=.js,.jsx,.cjs,.mjs,.vue
+  - sonar.json.file.suffixes=.json
+  - sonar.jsp.file.suffixes=.jsp,.jspf,.jspx
+  - sonar.kotlin.file.suffixes=.kt,.kts
+  - sonar.php.file.suffixes=php,php3,php4,php5,phtml,inc
+  - sonar.python.file.suffixes=py
+  - sonar.ruby.file.suffixes=.rb
+  - sonar.scala.file.suffixes=.scala
+  - sonar.terraform.file.suffixes=.tf
+  - sonar.typescript.file.suffixes=.ts,.tsx,.cts,.mts
+  - sonar.vbnet.file.suffixes=.vb
+  - sonar.xml.file.suffixes=.xml,.xsd,.xsl,.config
+  - sonar.yaml.file.suffixes=.yaml,.yml
+Project scanner properties:
+  - sonar.exclusions=**/node_modules/**, src/app/app.component.css, src/app/app.config.server.ts, src/app/app.config.ts, src/app/app.routes.ts, karma.conf.js, src/main.server.ts, src/main.ts, src/app/shared/models/**, src/app/shared/services/**, src/app/shared/utils/**, src/app/features/profile/profile.component.ts,server.ts, src/app/core/interceptors/auth.interceptor.ts, src/app/features/product/product.component.ts, src/app/app.component.ts, src/app/features/home/home.component.ts
+  - sonar.host.url=http://localhost:9000
+  - sonar.login=******
+  - sonar.projectBaseDir=C:\Ingenieria\DSY2205_EXP3_S8_FELIPE_MEZA_MORA\FrontEnd
+  - sonar.projectKey=dyf
+  - sonar.projectName=dyf
+  - sonar.projectVersion=1.0
+  - sonar.scanner.apiBaseUrl=http://localhost:9000/api/v2
+  - sonar.scanner.app=ScannerCLI
+  - sonar.scanner.appVersion=6.2.1.4610
+  - sonar.scanner.arch=amd64
+  - sonar.scanner.bootstrapStartTime=1733709968942
+  - sonar.scanner.home=C:\Users\Felipe Meza\Downloads\sonar-scanner-cli-6.2.1.4610-windows-x64\sonar-scanner-6.2.1.4610-windows-x64\bin\..
+  - sonar.scanner.os=windows
+  - sonar.scanner.wasEngineCacheHit=true
+  - sonar.scanner.wasJreCacheHit=HIT
+  - sonar.sourceEncoding=UTF-8
+  - sonar.sources=src
+  - sonar.test.inclusions=**/*.spec.ts
+  - sonar.tests=src
+  - sonar.typescript.lcov.reportPaths=coverage/lcov.info
+  - sonar.working.directory=C:\Ingenieria\DSY2205_EXP3_S8_FELIPE_MEZA_MORA\FrontEnd\.scannerwork

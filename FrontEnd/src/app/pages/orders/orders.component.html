@@ -1,0 +1,43 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Listado de Pedidos</h2>
+      
+      <!-- Si hay pedidos filtrados, se muestran en tarjetas -->
+      <div *ngIf="pedidosFiltrados.length > 0; else noPedidos">
+        <div class="card mb-3" *ngFor="let pedido of pedidosFiltrados">
+          
+          <!-- Cabecera de la tarjeta con el nombre del cliente -->
+          <div class="card-header">
+            Pedido de {{ pedido.usuario.nombre }}
+          </div>
+
+          <div class="card-body">
+            <!-- Información general del pedido -->
+            <h5 class="card-title">Información del Pedido</h5>
+            <p class="card-text"><strong>Dirección:</strong> {{ pedido.usuario.direccionEnvio }}</p>
+            <p class="card-text"><strong>Correo:</strong> {{ pedido.usuario.correo }}</p>
+            <p class="card-text"><strong>Teléfono:</strong> {{ pedido.usuario.telefono }}</p>
+            <p class="card-text"><strong>Total:</strong> {{ pedido.total | currency:'':'symbol':'1.0-0' }}</p>
+            <p class="card-text"><strong>Estado:</strong> {{ pedido.estado }}</p>
+            
+            <!-- Detalles de los productos del pedido -->
+            <h5 class="card-title">Detalle del Pedido</h5>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <!-- Muestra la imagen del producto y su detalle -->
+                <img [src]="pedido.producto.imagen" class="img-thumbnail" style="width: 50px; height: auto;" alt="{{ pedido.producto.nombre }}">
+                {{ pedido.producto.nombre }} - {{ pedido.cantidad }} x {{ pedido.producto.precio | currency:'':'symbol':'1.0-0' }} = {{ pedido.producto.precio * pedido.cantidad | currency:'':'symbol':'1.0-0' }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensaje cuando no hay pedidos -->
+      <ng-template #noPedidos>
+        <p>No se encontraron pedidos para este usuario.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

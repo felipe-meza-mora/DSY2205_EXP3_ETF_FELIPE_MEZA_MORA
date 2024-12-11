@@ -1,0 +1,64 @@
+<div class="container">
+    <h2>Lista de Usuarios</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>RUT</th>
+          <th>Teléfono</th>
+          <th>Dirección de Envío</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.nombre }}</td>
+          <td>{{ user.rut }}</td>
+          <td>{{ user.telefono }}</td>
+          <td>{{ user.direccionEnvio }}</td>
+          <td>
+            <button type="button" class="btn btn-danger btn-sm" (click)="openDeleteModal(user)">
+                <i class="bi bi-trash"></i> Eliminar
+              </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+          <!-- Modal para confirmación de eliminación -->
+          <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="deleteUserModalLabel">Confirmar Eliminación</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>¿Estás seguro de que deseas eliminar al usuario "{{ selectedUser?.nombre }}"?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  <button type="button" class="btn btn-danger" (click)="deleteUser()">Eliminar Usuario</button>
+                </div>
+              </div>
+            </div>
+          </div>
+      
+      
+          <!-- Toast container -->
+          <div aria-live="polite" aria-atomic="true" class="position-relative">
+            <div class="toast-container position-fixed top-0 end-0 p-3">
+              <div id="liveToast" class="toast align-items-center text-white bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                  <div class="toast-body" id="toast-body">
+                    
+                  </div>
+                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+</div>

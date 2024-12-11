@@ -1,0 +1,22 @@
+html, body {
+  height: 100%;  /* Asegura que el body ocupe todo el espacio disponible */
+  margin: 0;     /* Elimina márgenes en el body */
+  padding: 0;    /* Elimina el padding por defecto */
+  overflow-x: hidden; /* Evita el desbordamiento horizontal */
+}
+
+.container {
+  width: 100%;  /* Asegura que el contenedor no exceda el ancho */
+  box-sizing: border-box; /* Hace que el padding no afecte el ancho */
+}
+
+footer {
+  margin-top: auto;  /* Asegura que el footer se quede en la parte inferior */
+  margin-bottom: 0;  /* Elimina cualquier margen adicional debajo del footer */
+}
+
+.card-img-top {
+  width: 100%;          /* Hace que la imagen ocupe el 100% del espacio disponible en la tarjeta */
+  height: 500px;        /* Fija la altura de las imágenes */
+  object-fit: cover;    /* Hace que la imagen se recorte y ajuste dentro del contenedor sin deformarse */
+}

@@ -1,0 +1,30 @@
+/* Fondo de la página */
+.fondo {
+    background-image: url("../assets/images/fondo.jpg"); 
+    background-size: cover; /* Hace que la imagen cubra toda el área */
+    background-position: center center; /* Centra la imagen */
+    background-attachment: fixed; /* Hace que la imagen se quede fija mientras se desplaza el contenido */
+}
+
+/* Asegura que todo el contenido ocupe el 100% del alto de la página */
+html, body {
+    height: 100%;  /* Esto asegura que el body ocupe todo el espacio disponible */
+    margin: 0;  /* Elimina cualquier margen que pueda interferir */
+}
+
+/* Configuración de Flexbox para la disposición de la página */
+body {
+    display: flex; /* Activa el modelo de diseño flexbox */
+    flex-direction: column; /* Apila los elementos en columna */
+    justify-content: space-between; /* Hace que el footer se quede en la parte inferior */
+}
+
+/* Asegura que el contenido ocupe todo el espacio disponible y se ajuste */
+.container {
+    flex: 1; /* Hace que el contenido ocupe el espacio restante disponible */
+}
+
+/* Asegura que el footer se mantenga al final */
+footer {
+    margin-top: auto; /* Esto asegura que el footer se quede al final */
+}
