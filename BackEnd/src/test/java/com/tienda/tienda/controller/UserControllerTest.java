@@ -323,5 +323,122 @@ class UserControllerTest {
         assertEquals(404, response.getStatusCode().value());
         assertEquals("Usuario no encontrado", response.getBody().get("message"));
     }
+    
+    @SuppressWarnings("null")
+    @Test
+    void testRegisterUserSQLInjection() {
+        User userWithSQLInjection = new User();
+        userWithSQLInjection.setCorreo("juan@example.com; DROP TABLE users;");
+        userWithSQLInjection.setTelefono("123456789");
+        userWithSQLInjection.setDireccionEnvio("Calle falsa 123");
 
+        ResponseEntity<Map<String, String>> response = userController.registerUser(userWithSQLInjection);
+
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals("Error: Datos no válidos.", response.getBody().get("message"));
+    }
+
+    @Test
+    void testLoginInvalidCredentials() {
+        when(userService.login("juan@example.com", "wrongpassword")).thenReturn(Optional.empty());
+
+        User invalidUser = new User();
+        invalidUser.setCorreo("juan@example.com");
+        invalidUser.setPassword("wrongpassword");
+
+        ResponseEntity<User> response = userController.login(invalidUser);
+
+        assertEquals(401, response.getStatusCode().value());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void testUpdatePasswordMissingFields() {
+        Map<String, String> requestWithoutEmail = new HashMap<>();
+        requestWithoutEmail.put("newPassword", "newpassword123");
+
+        ResponseEntity<String> response = userController.updatePassword(requestWithoutEmail);
+
+        assertEquals(404, response.getStatusCode().value());
+        assertEquals("Usuario no encontrado o error al actualizar la contraseña.", response.getBody());
+    }
+    
+    @SuppressWarnings("null")
+    @Test
+    void testRegisterUserSuccess() {
+        User user = new User();
+        user.setNombre("Juan");
+        user.setCorreo("juan@example.com");
+        user.setPassword("password123");
+        user.setPermisos("USER");
+        user.setRut("12345678-9");
+        user.setTelefono("123456789");
+        user.setDireccionEnvio("Direccion de prueba");
+
+        when(userService.saveUser(any(User.class))).thenReturn(user);
+
+        ResponseEntity<Map<String, String>> response = userController.registerUser(user);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("Usuario añadido correctamente: Juan", response.getBody().get("message"));
+    }
+
+    @Test
+    void testContainsSQLInjectionNoInjection() {
+        String safeValue = "SafeValue";
+        boolean result = userController.containsSQLInjection(safeValue);
+        assertFalse(result);
+    }
+
+    @Test
+    void testContainsSQLInjectionWithInjection() {
+        String[] injectionKeywords = {"DROP", "DELETE", "INSERT", "UPDATE", "--", ";", "/*", "*/"};
+        for (String keyword : injectionKeywords) {
+            String unsafeValue = "UnsafeValue " + keyword;
+            boolean result = userController.containsSQLInjection(unsafeValue);
+            assertTrue(result);
+        }
+    }
+
+    @Test
+    void testRegisterUserSQLInjectionInCorreo() {
+        User userWithSQLInjection = new User();
+        userWithSQLInjection.setCorreo("juan@example.com; DROP TABLE users;");
+        userWithSQLInjection.setTelefono("123456789");
+        userWithSQLInjection.setDireccionEnvio("Calle falsa 123");
+
+        ResponseEntity<Map<String, String>> response = userController.registerUser(userWithSQLInjection);
+
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals("Error: Datos no válidos.", response.getBody().get("message"));
+    }
+
+    @Test
+    void testRegisterUserSQLInjectionInTelefono() {
+        User userWithSQLInjection = new User();
+        userWithSQLInjection.setCorreo("juan@example.com");
+        userWithSQLInjection.setTelefono("123456789; DROP TABLE users;");
+        userWithSQLInjection.setDireccionEnvio("Calle falsa 123");
+    
+        ResponseEntity<Map<String, String>> response = userController.registerUser(userWithSQLInjection);
+    
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals("Error: Datos no válidos.", response.getBody().get("message"));
+    }
+
+    @Test
+    void testRegisterUserSQLInjectionInDireccionEnvio() {
+        User userWithSQLInjection = new User();
+        userWithSQLInjection.setCorreo("juan@example.com");
+        userWithSQLInjection.setTelefono("123456789");
+        userWithSQLInjection.setDireccionEnvio("Calle falsa 123; DROP TABLE users;");
+
+        ResponseEntity<Map<String, String>> response = userController.registerUser(userWithSQLInjection);
+
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals("Error: Datos no válidos.", response.getBody().get("message"));
+    }
+
+    
+    
 }
