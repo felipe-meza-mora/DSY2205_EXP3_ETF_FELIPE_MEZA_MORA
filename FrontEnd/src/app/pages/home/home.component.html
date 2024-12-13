@@ -12,30 +12,50 @@
   </div>
 </div>
 
-
 <div class="container" *ngIf="!isAdmin; else adminView">
-  <div id="cards" class="row"></div>
+  <!-- Barra de búsqueda -->
+  <div class="container mt-3">
+    <input 
+      type="text" 
+      class="form-control" 
+      placeholder="Buscar productos..." 
+      [(ngModel)]="searchTerm"
+      (input)="filterProducts()"
+    />
+  </div>
+
+  <!-- Lista de productos -->
   <div class="container mt-5">
     <div class="album py-5 bg-body-tertiary">
       <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-          <div class="col" *ngFor="let product of products">
+          <!-- Productos filtrados -->
+          <div class="col" *ngFor="let product of filteredProducts">
             <div class="card shadow-sm h-100">
-              <img [src]="product.imagen" class="bd-placeholder-img card-img-top img-fluid" alt="{{product.nombre}}">
+              <img [src]="product.imagen" class="bd-placeholder-img card-img-top img-fluid" alt="{{ product.nombre }}">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ product.nombre }}</h5>
                 <p class="card-text">{{ product.descripcion | slice:0:100 }}</p>
                 <div class="d-flex justify-content-between align-items-center mt-auto">
                   <div>
-                    <span class="text-danger fw-bold ms-2"> Precio {{ product.precio | currency:'':'symbol':'1.0-0' }}</span>
+                    <span class="text-danger fw-bold ms-2"> 
+                      Precio {{ product.precio | currency:'':'symbol':'1.0-0' }}
+                    </span>
                   </div>
                   <div class="btn-group">
-                    <a type="button" class="btn btn-sm btn-outline-secondary btn-warning text-white" (click)="addToCart(product)">Agregar al carrito</a>
-                    <a href="/details/{{product.id}}" class="btn btn-sm btn-outline-secondary">Ver más</a>
+                    <a type="button" class="btn btn-sm btn-outline-secondary btn-warning text-white" (click)="addToCart(product)">
+                      Agregar al carrito
+                    </a>
+                    <a href="/details/{{ product.id }}" class="btn btn-sm btn-outline-secondary">Ver más</a>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Mensaje si no hay productos que coincidan con la búsqueda -->
+          <div class="col-12 text-center" *ngIf="filteredProducts.length === 0">
+            <p class="text-muted">No se encontraron productos que coincidan con tu búsqueda.</p>
           </div>
         </div>
       </div>
@@ -43,6 +63,8 @@
   </div>
 </div>
 
+<!-- Vista de administrador -->
+<!-- Vista de administrador -->
 <ng-template #adminView>
   <div class="container mt-5">
     <h2>Listado de Productos</h2>
@@ -51,6 +73,18 @@
       Agregar Producto
     </button>
     <br>
+
+    <!-- Barra de búsqueda -->
+    <div class="container mt-3">
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Buscar productos..." 
+        [(ngModel)]="adminSearchTerm"
+        (input)="filterAdminProducts()"
+      />
+    </div>
+
     <br>
     <table class="table table-striped table-hover">
       <thead class="table-secondary">
@@ -64,7 +98,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let product of products">
+        <!-- Usamos adminFilteredProducts para mostrar solo los productos filtrados -->
+        <tr *ngFor="let product of adminFilteredProducts">
           <td>{{ product.id }}</td>
           <td>{{ product.nombre }}</td>
           <td>{{ product.descripcion }}</td>
@@ -81,134 +116,61 @@
             </div>
           </td>
         </tr>
+
+        <!-- Mensaje si no se encuentran productos -->
+        <tr *ngIf="adminFilteredProducts.length === 0">
+          <td colspan="6" class="text-center text-muted">
+            No se encontraron productos que coincidan con tu búsqueda.
+          </td>
+        </tr>
       </tbody>
     </table>
 
-       <!-- Modal para agregar producto -->
-       <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="productModalLabel">Agregar Nuevo Producto</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form [formGroup]="productForm" (ngSubmit)="addProduct()">
-                <div class="mb-3">
-                  <label for="descripcion" class="form-label">Descripción</label>
-                  <textarea type="text" class="form-control" id="descripcion" formControlName="descripcion"></textarea>
-                  <div *ngIf="productForm.get('descripcion')?.invalid && (productForm.get('descripcion')?.dirty || productForm.get('descripcion')?.touched)" class="text-danger">
-                    <div *ngIf="productForm.get('descripcion')?.errors?.['required']">Descripción es requerida.</div>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label for="precio" class="form-label">Precio</label>
-                  <input type="number" class="form-control" id="precio" formControlName="precio">
-                  <div *ngIf="productForm.get('precio')?.invalid && (productForm.get('precio')?.dirty || productForm.get('precio')?.touched)" class="text-danger">
-                    <div *ngIf="productForm.get('precio')?.errors?.['required']">Precio es requerido.</div>
-                    <div *ngIf="productForm.get('precio')?.errors?.['min']">El precio debe ser mayor que 0.</div>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label for="imagen" class="form-label">Imagen</label>
-                  <input type="text" class="form-control" id="imagen" formControlName="imagen">
-                  <div *ngIf="productForm.get('imagen')?.invalid && (productForm.get('imagen')?.dirty || productForm.get('imagen')?.touched)" class="text-danger">
-                    <div *ngIf="productForm.get('imagen')?.errors?.['required']">Imagen URL es requerido.</div>
-                    <div *ngIf="productForm.get('imagen')?.errors?.['pattern']">URL no válida.</div>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label for="nombre" class="form-label">Nombre</label>
-                  <input type="text" class="form-control" id="nombre" formControlName="nombre">
-                  <div *ngIf="productForm.get('nombre')?.invalid && (productForm.get('nombre')?.dirty || productForm.get('nombre')?.touched)" class="text-danger">
-                    <div *ngIf="productForm.get('nombre')?.errors?.['nombre']">Nombre es requerido.</div>
-                  </div>
-                </div>
-                <button type="submit" class="btn btn-warning text-white" [disabled]="productForm.invalid">Agregar Producto</button>
-                <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal para editar producto -->
-    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-inert="true">
+    <!-- Modal para agregar producto -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editProductModalLabel">Editar Producto</h5>
+            <h5 class="modal-title" id="productModalLabel">Agregar Nuevo Producto</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form *ngIf="editProductForm" [formGroup]="editProductForm" (ngSubmit)="updateProduct()">
+            <form [formGroup]="productForm" (ngSubmit)="addProduct()">
               <div class="mb-3">
-                <label for="editDescripcion" class="form-label">Descripción</label>
-                <textarea type="text" class="form-control" id="editDescripcion" formControlName="descripcion"></textarea>
-                <div *ngIf="editProductForm.get('descripcion')?.invalid && (editProductForm.get('descripcion')?.dirty || editProductForm.get('descripcion')?.touched)" class="text-danger">
-                  <div *ngIf="editProductForm.get('descripcion')?.errors?.['required']">Descripción es requerida.</div>
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea type="text" class="form-control" id="descripcion" formControlName="descripcion"></textarea>
+                <div *ngIf="productForm.get('descripcion')?.invalid && (productForm.get('descripcion')?.dirty || productForm.get('descripcion')?.touched)" class="text-danger">
+                  <div *ngIf="productForm.get('descripcion')?.errors?.['required']">Descripción es requerida.</div>
                 </div>
               </div>
               <div class="mb-3">
-                <label for="editPrecio" class="form-label">Precio</label>
-                <input type="number" class="form-control" id="editPrecio" formControlName="precio">
-                <div *ngIf="editProductForm.get('precio')?.invalid && (editProductForm.get('precio')?.dirty || editProductForm.get('precio')?.touched)" class="text-danger">
-                  <div *ngIf="editProductForm.get('precio')?.errors?.['required']">Precio es requerido.</div>
-                  <div *ngIf="editProductForm.get('precio')?.errors?.['min']">El precio debe ser mayor que 0.</div>
+                <label for="precio" class="form-label">Precio</label>
+                <input type="number" class="form-control" id="precio" formControlName="precio">
+                <div *ngIf="productForm.get('precio')?.invalid && (productForm.get('precio')?.dirty || productForm.get('precio')?.touched)" class="text-danger">
+                  <div *ngIf="productForm.get('precio')?.errors?.['required']">Precio es requerido.</div>
+                  <div *ngIf="productForm.get('precio')?.errors?.['min']">El precio debe ser mayor que 0.</div>
                 </div>
               </div>
               <div class="mb-3">
-                <label for="editImagen" class="form-label">Imagen</label>
-                <input type="text" class="form-control" id="editImagen" formControlName="imagen">
-                <div *ngIf="editProductForm.get('imagen')?.invalid && (editProductForm.get('imagen')?.dirty || editProductForm.get('imagen')?.touched)" class="text-danger">
-                  <div *ngIf="editProductForm.get('imagen')?.errors?.['required']">Imagen URL es requerido.</div>
-                  <div *ngIf="editProductForm.get('imagen')?.errors?.['pattern']">URL no válida.</div>
+                <label for="imagen" class="form-label">Imagen</label>
+                <input type="text" class="form-control" id="imagen" formControlName="imagen">
+                <div *ngIf="productForm.get('imagen')?.invalid && (productForm.get('imagen')?.dirty || productForm.get('imagen')?.touched)" class="text-danger">
+                  <div *ngIf="productForm.get('imagen')?.errors?.['required']">Imagen URL es requerido.</div>
                 </div>
               </div>
               <div class="mb-3">
-                <label for="editNombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="editNombre" formControlName="nombre">
-                <div *ngIf="editProductForm.get('nombre')?.invalid && (editProductForm.get('nombre')?.dirty || editProductForm.get('nombre')?.touched)" class="text-danger">
-                  <div *ngIf="editProductForm.get('nombre')?.errors?.['required']">Nombre es requerido.</div>
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" formControlName="nombre">
+                <div *ngIf="productForm.get('nombre')?.invalid && (productForm.get('nombre')?.dirty || productForm.get('nombre')?.touched)" class="text-danger">
+                  <div *ngIf="productForm.get('nombre')?.errors?.['required']">Nombre es requerido.</div>
                 </div>
               </div>
-              <button type="submit" class="btn btn-warning text-white" [disabled]="editProductForm.invalid">Actualizar Producto</button>
+              <button type="submit" class="btn btn-warning text-white" [disabled]="productForm.invalid">Agregar Producto</button>
               <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
             </form>
           </div>
         </div>
       </div>
     </div>
-
-
-       <!-- Modal para confirmación de eliminación -->
-    <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="deleteProductModalLabel">Confirmar Eliminación</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <p>¿Estás seguro de que deseas eliminar el producto "{{ selectedProduct?.nombre }}"?</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" (click)="deleteProduct()">Eliminar Producto</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-      <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
-        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="toast-header">
-            <strong class="me-auto">Confirmación</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>
-          <div id="toast-body" class="toast-body"></div>
-        </div>
-      </div>
-
   </div>
 </ng-template>

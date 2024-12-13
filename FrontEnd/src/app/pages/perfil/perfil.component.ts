@@ -44,6 +44,8 @@ export class PerfilComponent implements OnInit {
   initialUserData: any;  // Para almacenar los datos iniciales
 
   ngOnInit(): void {
+    const user = JSON.parse(localStorage.getItem('sesionUsuario') || '{}');
+    console.log('Datos cargados en Home:', user); // Debug
     this.formRegistro = this.fb.group({
       rut: ['', [Validators.required, validarRut]],
       nombre: ['', Validators.required],
@@ -61,9 +63,9 @@ export class PerfilComponent implements OnInit {
   loadUserData(): void {
     const user = JSON.parse(localStorage.getItem('sesionUsuario') || '{}');
     if (user) {
-      // Guardamos los datos iniciales
+      console.log('Datos cargados desde localStorage: ', user); // Debug
       this.initialUserData = { ...user };
-
+  
       this.formRegistro.patchValue({
         rut: user.rut,
         nombre: user.nombre,
@@ -124,30 +126,38 @@ export class PerfilComponent implements OnInit {
    */
   
 
-    submitForm(): void {
-      if (this.formRegistro.valid) {
-        const formData = this.formRegistro.value;
-        const sesionUsuario: User = JSON.parse(localStorage.getItem('sesionUsuario') || '{}');
-        let currentPassword = sesionUsuario.password;
+  submitForm(): void {
+    if (this.formRegistro.valid) {
+      const formData = { ...this.formRegistro.value };
+      formData.id = this.initialUserData.id; // Asegúrate de incluir el ID
     
-        if (!formData.password) {
-          formData.password = currentPassword;
+      console.log('Datos enviados al backend:', formData); // Debug
+    
+      this.userService.updateUser(formData.id, formData).subscribe({
+        next: (response: any) => {
+          this.mensajeExito = response.message;
+      
+          // Actualizar localStorage
+          localStorage.setItem('sesionUsuario', JSON.stringify({ ...this.initialUserData, ...formData }));
+          console.log('Datos en localStorage actualizados: ', JSON.parse(localStorage.getItem('sesionUsuario') || '{}'));
+      
+          // Recargar los datos del formulario
+          this.loadUserData(); // Llama a tu método de carga de datos
+          console.log('Formulario actualizado con los nuevos datos.');
+      
+          // Redirigir al usuario después de 4 segundos
+          setTimeout(() => {
+            this.router.navigate(['/home']);
+          }, 4000);
+        },
+        error: (error) => {
+          console.error('Error actualizando el perfil: ', error);
         }
-        delete formData.confirmPassword;
-    
-        this.userService.updateUser(sesionUsuario.id, formData).subscribe({
-          next: (response: any) => { // Aquí usas 'any' para la respuesta
-            this.mensajeExito = response.message; // Accedes a 'message'
-            setTimeout(() => {
-              this.router.navigate(['/home']);
-            }, 4000);
-          },
-          error: (error) => {
-            console.error('Error actualizando el perfil: ', error);
-          }
-        });
-      }
+      });
+    } else {
+      console.warn('El formulario no es válido:', this.formRegistro.value); // Debug
     }
+  }
 
   /**
    * Método para limpiar el formulario de registro, restableciendo todos los campos a su estado inicial.

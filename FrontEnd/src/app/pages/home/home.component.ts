@@ -6,13 +6,14 @@ import { ProductService } from '../../service/product.service';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Product } from '../../models/product.model';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 declare var bootstrap: any; 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule,FormsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -28,7 +29,13 @@ export class HomeComponent implements OnInit, OnDestroy {
    * Arreglo que contiene todos los productos disponibles para mostrar en la página de inicio.
    * @type {Product[]} Arreglo de objetos de tipo Product.
    */
+  searchTerm: string = ''; // Término de búsqueda ingresado por el
   products: Product[] = [];
+  filteredProducts: Product[] = []; // Productos filtrados
+
+ adminSearchTerm: string = ''; // Término de búsqueda del administrador
+ adminFilteredProducts: Product[] = []; // Productos filtrados para el administrador
+
 
   /**
  * FormGroup para el formulario de agregar producto.
@@ -141,11 +148,29 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private loadProducts(): void {
     this.productService.getProducts().subscribe((response: { products: Product[] }) => {
-      this.products = response.products; // Accede al array de productos
+      this.products = response.products;
+      this.filteredProducts = this.products;
+      this.adminFilteredProducts = this.products; // Inicializamos los productos filtrados
       console.log(this.products);
     });
   }
-  
+
+  filterProducts(): void {
+    const term = this.searchTerm.toLowerCase(); // Convertimos a minúsculas para hacer la búsqueda insensible a mayúsculas
+    this.filteredProducts = this.products.filter(product => 
+      product.nombre.toLowerCase().includes(term) ||
+      product.descripcion.toLowerCase().includes(term)
+    );
+  }
+
+  filterAdminProducts(): void {
+    const term = this.adminSearchTerm.toLowerCase(); // Convertimos el término a minúsculas para que sea insensible a mayúsculas/minúsculas
+    this.adminFilteredProducts = this.products.filter(product =>
+      product.nombre.toLowerCase().includes(term) ||
+      product.descripcion.toLowerCase().includes(term) ||
+      product.id.toString().includes(term) // También permitimos buscar por ID
+    );
+  }
 
   /**
    * Método privado que verifica si el usuario actual tiene permisos de administrador.

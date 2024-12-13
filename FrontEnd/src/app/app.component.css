@@ -8,12 +8,14 @@
 
 /* Asegura que todo el contenido ocupe el 100% del alto de la página */
 html, body {
-    height: 100%;  /* Esto asegura que el body ocupe todo el espacio disponible */
     margin: 0;  /* Elimina cualquier margen que pueda interferir */
 }
 
 /* Configuración de Flexbox para la disposición de la página */
 body {
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
     display: flex; /* Activa el modelo de diseño flexbox */
     flex-direction: column; /* Apila los elementos en columna */
     justify-content: space-between; /* Hace que el footer se quede en la parte inferior */
@@ -22,6 +24,12 @@ body {
 /* Asegura que el contenido ocupe todo el espacio disponible y se ajuste */
 .container {
     flex: 1; /* Hace que el contenido ocupe el espacio restante disponible */
+}
+
+.content{
+    position: relative;
+    min-height:80vh !important;
+    top: 0;
 }
 
 /* Asegura que el footer se mantenga al final */

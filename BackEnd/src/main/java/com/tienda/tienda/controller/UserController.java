@@ -80,10 +80,13 @@ public class UserController {
     // Endpoint para actualizar un usuario
     @PutMapping("{id}")
     public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id, @RequestBody User user) {
-        // Lógica para actualizar el usuario
+        // Sobrescribe el ID del usuario con el ID de la URL
+        user.setId(id);
+
+        // Aquí iría tu lógica para actualizar el usuario
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Usuario actualizado correctamente");
-        response.put("data", user); 
+        response.put("data", user);
         return ResponseEntity.ok(response);
     }
 

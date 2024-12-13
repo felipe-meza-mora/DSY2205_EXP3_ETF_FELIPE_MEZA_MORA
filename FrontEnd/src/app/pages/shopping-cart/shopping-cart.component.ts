@@ -98,7 +98,7 @@ export class ShoppingCartComponent implements OnInit {
       toast.show(); // Esto mostrará el toast
     }
   }
-  
+
   proceedToCheckout(): void {
     const userData = JSON.parse(localStorage.getItem('sesionUsuario') || '{}');
     
